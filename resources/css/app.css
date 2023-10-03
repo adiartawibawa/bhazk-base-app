@@ -1,0 +1,64 @@
+/* @tailwind base; */
+/**
+ * Remove the default box-shadow for invalid elements to prevent
+ * inputs in Livewire components showing with a
+ * red border by default in Firefox.
+ */
+/* input:invalid,
+textarea:invalid,
+select:invalid {
+    box-shadow: none;
+}
+
+@tailwind components;
+@tailwind utilities; */
+
+/**
+ * Here you would add any custom utilities you need that don't come out of the
+ * box with Tailwind.
+ *
+ * Example :
+ *
+ * .bg-pattern-graph-paper { ... }
+ * .skew-45 { ... }
+ */
+
+/* [x-cloak] {
+    display: none;
+} */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply relative z-1 bg-whiten text-base font-normal text-body;
+    }
+}
+
+@layer components {
+}
+
+@layer utilities {
+    /* Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .chat-height {
+        @apply h-[calc(100vh_-_8.125rem)] lg:h-[calc(100vh_-_5.625rem)];
+    }
+    .inbox-height {
+        @apply h-[calc(100vh_-_8.125rem)] lg:h-[calc(100vh_-_5.625rem)];
+    }
+}
+
+[x-cloak] {
+    display: none !important;
+}
