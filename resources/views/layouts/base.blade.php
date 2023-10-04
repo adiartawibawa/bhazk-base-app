@@ -32,9 +32,9 @@
 
     @yield('body')
 
-    @livewire('wire-elements-modal')
-
     @livewireScripts
+
+    @livewire('livewire-ui-modal')
 </body>
 
 </html>
