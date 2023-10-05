@@ -3,41 +3,89 @@
 namespace App\Livewire\User;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
+use Laravel\Fortify\Contracts\UpdatesUserPasswords;
 use LivewireUI\Modal\ModalComponent;
 
 class UpdatePassword extends ModalComponent
 {
-    public string $current_password = '';
-    public string $password = '';
-    public string $password_confirmation = '';
+    /**
+     * The component's state.
+     *
+     * @var array
+     */
+    public $state = [
+        'current_password' => '',
+        'password' => '',
+        'password_confirmation' => '',
+    ];
 
-    public function updatePassword(): void
+    public function updatePassword(UpdatesUserPasswords $updater): void
     {
-        try {
-            $validated = $this->validate([
-                'current_password' => ['required', 'string', 'current_password'],
-                'password' => ['required', 'string', Password::defaults(), 'confirmed'],
-            ]);
-        } catch (ValidationException $e) {
-            $this->reset('current_password', 'password', 'password_confirmation');
+        $this->resetErrorBag();
 
-            throw $e;
+        $updater->update(Auth::user(), $this->state);
+
+        if (request()->hasSession()) {
+            request()->session()->put([
+                'password_hash_' . Auth::getDefaultDriver() => Auth::user()->getAuthPassword(),
+            ]);
         }
 
-        auth()->user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        $this->reset('current_password', 'password', 'password_confirmation');
+        $this->state = [
+            'current_password' => '',
+            'password' => '',
+            'password_confirmation' => '',
+        ];
 
         $this->dispatch('password-updated');
+
+        $this->closeModal();
+    }
+
+    /**
+     * Get the current user of the application.
+     *
+     * @return mixed
+     */
+    public function getUserProperty()
+    {
+        return Auth::user();
     }
 
     public function render()
     {
         return view('livewire.user.update-password');
+    }
+
+    public function generatePassword(): void
+    {
+        $lowercase = range('a', 'z');
+        $uppercase = range('A', 'Z');
+        $digits = range(0, 9);
+        $special = ['!', '@', '#', '$', '%', '^', '*'];
+        $chars = array_merge($lowercase, $uppercase, $digits, $special);
+        $length = 12;
+        do {
+            $password = array();
+
+            for ($i = 0; $i <= $length; $i++) {
+                $int = rand(0, count($chars) - 1);
+                $password[] = $chars[$int];
+            }
+        } while (empty(array_intersect($special, $password)));
+
+        $this->setPasswords(implode('', $password));
+    }
+
+    private function setPasswords($value): void
+    {
+        $this->state = [
+            'password' => $value,
+            'password_confirmation' => $value,
+        ];
     }
 }

@@ -181,8 +181,8 @@
                     </span>
 
                     <span class="h-12 w-12 rounded-full">
-                        <img src="https://www.gravatar.com/avatar/{{ md5(Auth::user()->email) }}?d=mp"
-                            class="rounded-full" alt="{{ Auth::user()->name }}" />
+                        <img src="{{ Auth::user()->avatar_url }}" class="rounded-full"
+                            alt="{{ Auth::user()->name }}" />
                     </span>
 
                     <svg :class="dropdownOpen && 'rotate-180'" class="hidden fill-current sm:block" width="12"

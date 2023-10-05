@@ -42,5 +42,6 @@
             </div>
             <!-- ===== Content Area End ===== -->
         </div>
+
     </div>
 @endsection

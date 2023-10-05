@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -30,7 +32,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'email',
         'password',
         'current_role_id',
-        'username'
+        'username',
+        'avatar'
     ];
 
     /**
@@ -41,6 +44,9 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
+        'email_verified_at',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -52,6 +58,25 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected $appends = [
+        'avatar_url',
+    ];
+
+    public function getAvatarUrlAttribute()
+    {
+        if ($this->avatar && Storage::disk('avatars')->exists($this->avatar)) {
+            return Storage::disk('avatars')->url($this->avatar);
+        }
+
+        return $this->generateGravatar();
+    }
+
+    public function generateGravatar()
+    {
+        // $emailHas = md5($this->email);
+        return "https://www.gravatar.com/avatar/" . md5($this->email) . "?d=mp";
+    }
 
     public function currentRole(): BelongsTo
     {
