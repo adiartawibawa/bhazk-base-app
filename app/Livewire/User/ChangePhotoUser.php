@@ -3,7 +3,6 @@
 namespace App\Livewire\User;
 
 use Illuminate\Support\Facades\Auth;
-use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -43,5 +42,27 @@ class ChangePhotoUser extends Component
         ]);
 
         $this->preview = $this->photo->temporaryUrl();
+    }
+
+    public function storePhoto()
+    {
+        $name = md5($this->photo . microtime()) . '.' . $this->photo->extension();
+
+        $this->photo->storeAs('public/avatars', $name);
+
+        $this->user->update(['avatar' => $name]);
+
+        $this->clearPhoto();
+    }
+
+    public function cancelPhoto()
+    {
+        $this->clearPhoto();
+    }
+
+    public function clearPhoto()
+    {
+        $this->photo = null;
+        $this->preview = null;
     }
 }

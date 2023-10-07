@@ -65,8 +65,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     public function getAvatarUrlAttribute()
     {
-        if ($this->avatar && Storage::disk('avatars')->exists($this->avatar)) {
-            return Storage::disk('avatars')->url($this->avatar);
+        if ($this->avatar && Storage::exists('public/avatars')) {
+            return Storage::url('public/avatars/' . $this->avatar);
         }
 
         return $this->generateGravatar();

@@ -180,8 +180,9 @@
                             class="block text-xs font-medium">{{ __('Logged in as: :role', ['role' => auth()->user()->currentRole->name]) }}</span>
                     </span>
 
-                    <span class="h-12 w-12 rounded-full">
-                        <img src="{{ Auth::user()->avatar_url }}" class="rounded-full"
+                    <span class="h-12 w-12 object-cover object-center rounded-full">
+                        <img src="{{ Auth::user()->avatar_url }}"
+                            class="rounded-full h-12 w-12 object-cover object-center"
                             alt="{{ Auth::user()->name }}" />
                     </span>
 
