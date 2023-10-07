@@ -53,6 +53,8 @@ class ChangePhotoUser extends Component
         $this->user->update(['avatar' => $name]);
 
         $this->clearPhoto();
+
+        return redirect()->route('profile');
     }
 
     public function cancelPhoto()
